@@ -22,7 +22,11 @@ for var in "${mi_lista_variables[@]}"; do
 done
 
 echo "Crear el bucket S3 para el backend de Terraform"
-aws s3 mb s3://$BUCKET_NAME --region $AWS_REGION
+if aws s3 ls s3://$BUCKET_NAME 2>/dev/null; then
+    echo "Bucket $BUCKET_NAME already exists, skipping..."
+else
+    aws s3 mb s3://$BUCKET_NAME --region $AWS_REGION
+fi
 
 echo "versioning del bucket S3" 
 aws s3api put-bucket-versioning \
@@ -48,20 +52,6 @@ aws s3api put-bucket-encryption \
     }'
 
 echo "crear la tabla DynamoDB para el backend de Terraform"
-aws dynamodb create-table \
-    --table-name $DYNAMODB_TABLE_NAME \
-    --attribute-definitions AttributeName=LockID,AttributeType=S \
-    --key-schema AttributeName=LockID,KeyType=HASH \
-    --billing-mode PAY_PER_REQUEST \
-    --region $AWS_REGION
-
-
-if aws s3 ls s3://$BUCKET_NAME 2>/dev/null; then
-    echo "Bucket $BUCKET_NAME already exists, skipping..."
-else
-    aws s3 mb s3://$BUCKET_NAME --region $AWS_REGION
-fi
-
 if aws dynamodb describe-table --table-name $DYNAMODB_TABLE_NAME 2>/dev/null; then
     echo "Table $DYNAMODB_TABLE_NAME already exists, skipping..."
 else
