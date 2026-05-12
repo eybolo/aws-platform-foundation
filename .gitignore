@@ -2,4 +2,5 @@
 *.tfvars (pero no *.tfvars.example)
 *.tfstate
 *.tfstate.backup
+.terraform/
 backend.hcl
