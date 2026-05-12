@@ -3,16 +3,16 @@
 # Este bucket existe antes que Terraform y sus CMKs
 # Todo el resto de la infraestructura usa KMS CMK
 
+#Quitamos el dynamoDB porque estamos usando el lock del S3 bucket
+
 ENVIRONMENT=$1
 BUCKET_NAME=$2
 AWS_REGION=$3
-DYNAMODB_TABLE_NAME=$4
 
 mi_lista_variables=(
     "ENVIRONMENT"
     "BUCKET_NAME"
     "AWS_REGION"
-    "DYNAMODB_TABLE_NAME"
 )
 for var in "${mi_lista_variables[@]}"; do
     if [ -z "${!var}" ]; then
@@ -50,16 +50,3 @@ aws s3api put-bucket-encryption \
             }
         ]
     }'
-
-echo "crear la tabla DynamoDB para el backend de Terraform"
-if aws dynamodb describe-table --table-name $DYNAMODB_TABLE_NAME 2>/dev/null; then
-    echo "Table $DYNAMODB_TABLE_NAME already exists, skipping..."
-else
-    aws dynamodb create-table \
-        --table-name $DYNAMODB_TABLE_NAME \
-        --attribute-definitions AttributeName=LockID,AttributeType=S \
-        --key-schema AttributeName=LockID,KeyType=HASH \
-        --billing-mode PAY_PER_REQUEST \
-        --deletion-protection-enabled \
-        --region $AWS_REGION
-fi
