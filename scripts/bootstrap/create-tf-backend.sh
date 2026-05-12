@@ -60,5 +60,6 @@ else
         --attribute-definitions AttributeName=LockID,AttributeType=S \
         --key-schema AttributeName=LockID,KeyType=HASH \
         --billing-mode PAY_PER_REQUEST \
+        --deletion-protection-enabled \
         --region $AWS_REGION
 fi
