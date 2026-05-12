@@ -2,3 +2,4 @@
 *.tfvars (pero no *.tfvars.example)
 *.tfstate
 *.tfstate.backup
+backend.hcl

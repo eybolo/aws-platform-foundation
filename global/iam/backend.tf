@@ -1,7 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "mybucket"
-    key    = "path/to/my/key"
-    region = "mi-region"
+    key    = "global/iam/terraform.tfstate"
+    encrypt = true
   }
 }
