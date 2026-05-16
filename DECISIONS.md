@@ -1,5 +1,8 @@
 # Decisions
 
+## Una llave KMS (CMK) por servicio en vez de una única global
+Una sola llave crea un radio de impacto (blast radius) total si se  compromete.
+
 ## Los modulos reutilizables no llevan variables defaults
 Los modulos que son reutilizable no van a llevar variables de red
 para forzar al caller a ser explicito.
