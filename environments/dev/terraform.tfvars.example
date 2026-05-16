@@ -1,0 +1,37 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# TERRAFORM VARIABLES EXAMPLE
+# Este archivo contiene valores de ejemplo para el entorno de desarrollo.
+# Instrucciones: Copia este archivo a 'terraform.tfvars' y ajusta los valores.
+# ---------------------------------------------------------------------------------------------------------------------
+
+# Identificador del entorno (usado para tags y nombres de recursos)
+environment = "dev"
+
+# Rango principal de la VPC. 
+# Se recomienda un /16 para permitir suficiente crecimiento de subredes.
+vpc_cidr = "10.0.0.0/16"
+
+# Zonas de Disponibilidad
+# IMPORTANTE: El largo de esta lista determina la cantidad de subredes que se crearán.
+availability_zones = ["us-east-1a", "us-east-1b"]
+
+# --- SEGMENTACIÓN DE RED ---
+# NOTA: Todas las listas a continuación deben tener el mismo largo que 'availability_zones'.
+
+# Subredes Públicas: Capa para IGW, NAT Gateways y Load Balancers externos.
+subnet_public = [
+  "10.0.1.0/24", 
+  "10.0.2.0/24"
+]
+
+# Subredes Privadas: Capa de aplicación (sin acceso directo desde Internet).
+subnet_private = [
+  "10.0.11.0/24", 
+  "10.0.12.0/24"
+]
+
+# Subredes de Datos: Capa aislada para Bases de Datos (RDS, ElastiCache).
+subnet_data = [
+  "10.0.21.0/24", 
+  "10.0.22.0/24"
+]
