@@ -1,5 +1,17 @@
 # Decisions
 
+## Deshabilitar Multi-Región en llaves KMS (multi_region = false)
+Toda nuestra infraestructura actual corre centralizada en la región us-east-1. Activar llaves 
+multi-región duplica los costos de KMS innecesariamente y aumenta la superficie de exposición 
+del material criptográfico. Se establece 'false' como estándar; solo se evaluará cambiarlo 
+si implementamos una estrategia de Disaster Recovery (DR) activo-activo en otra región.
+
+## Una llave KMS (CMK) por servicio en vez de una única global
+Una sola llave crea un radio de impacto (blast radius) total si se compromete.
+Tener una llave por servicio aplica el principio de menor privilegio: si vulneran
+la llave de CloudWatch, no pueden descifrar los discos EBS ni las bases de datos.
+Además, evita políticas de acceso gigantescas y confusas en una sola llave.
+
 ## Una llave KMS (CMK) por servicio en vez de una única global
 Una sola llave crea un radio de impacto (blast radius) total si se  compromete.
 
