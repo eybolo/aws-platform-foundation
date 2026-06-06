@@ -1,5 +1,20 @@
 # Decisions
 
+## Deuda técnica: El security group de Aurora tiene egress abierto a 0.
+0.0.0/0 para permitir acceso a Secrets Manager y KMS. Solución correcta: crear VPC Endpoints para ambos servicios y restringir egress solo a la VPC.
+
+## Criterios de Configuración y Gestión de Parámetros
+Para mantener el módulo limpio, predecible y seguro entre diferentes entornos (Dev, Staging, Prod), aplicamos estrictamente las siguientes tres reglas:
+
+1. **Fijo en todos los entornos -> Hardcodeado**
+   Si un parámetro no debe cambiar independientemente de dónde se despliegue (por ejemplo, el tipo de motor `engine = "aurora-postgresql"`), se escribe directamente en el recurso. No se expone como variable para evitar errores de configuración.
+
+2. **Cambia entre entornos -> Variable**
+   Si el valor depende del entorno (por ejemplo, `cluster_identifier`, la cantidad de instancias, o la VPC/Subnets), se define mandatoriamente como una variable en `variables.tf`.
+
+3. **Sensible o generado -> Delegado a otro recurso**
+   Cualquier dato confidencial (como contraseñas) o que deba ser dinámico no se pasa por variables en texto plano. Se delega su ciclo de vida a recursos específicos como `random_password`, `aws_kms_key` o `aws_secretsmanager_secret`.
+
 ## Deshabilitar Multi-Región en llaves KMS (multi_region = false)
 Toda nuestra infraestructura actual corre centralizada en la región us-east-1. Activar llaves 
 multi-región duplica los costos de KMS innecesariamente y aumenta la superficie de exposición 
