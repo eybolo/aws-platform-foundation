@@ -51,13 +51,16 @@ El módulo automatiza el aprovisionamiento de una infraestructura de base de dat
 A continuación se muestra cómo invocar este módulo desde un directorio de entorno, abstrayendo la complejidad de la red y el cifrado mediante inyección de variables dinámicas:
 
 ```hcl
-module "rds_aurora_dev" {
+module "rds_aurora" {
   source = "../../modules/rds-aurora"
+
+  # Configuración General
+  environment           = var.environment
 
   # Configuración de Red
   vpc_id                = module.vpc.vpc_id
-  subnets_ids_data      = module.vpc.private_data_subnet_ids
-  subnets_cidrs_private = ["10.0.10.0/24", "10.0.11.0/24"] # Rango asignado a las aplicaciones consumidoras
+  subnets_ids_data      = module.vpc.subnet_data_id
+  subnets_cidrs_private = module.vpc.subnet_private_cidr
 
   # Seguridad y Cifrado
   key_arn = module.kms.key_arn
@@ -68,7 +71,7 @@ module "rds_aurora_dev" {
   master_username = "dbadmin"
 
   # Dimensionamiento del Cómputo
-  instance_count = 2 # Configuración redundante: 1 Writer + 1 Reader
+  instance_count = 2
   instance_class = "db.r6g.large"
 }
 ```
@@ -88,6 +91,16 @@ El secreto generado exporta los datos necesarios para que las aplicaciones de la
   "password": "ejemplo_password_aleatorio"
 }
 ```
+
+---
+
+## Outputs
+ 
+El módulo expone salidas clave para acoplar las capas de cómputo y seguridad sin generar dependencias duras en el código:
+ 
+* **`endpoint`**: El endpoint writer del clúster Aurora. Consumido por las instancias EC2 del ASG para establecer la conexión a la base de datos, típicamente inyectado vía variable de entorno o referenciado desde el secreto en Secrets Manager.
+* **`security_group_id`**: El ID del Security Group del clúster. Requerido por el módulo de ASG para crear la regla de egress cruzada que autoriza el tráfico de salida de las instancias EC2 en el puerto `5432` exclusivamente hacia este recurso.
+* **`secretsmanager_secret_arn`**: El ARN del secreto generado en Secrets Manager. Debe ser adjuntado como permiso en la policy IAM de las instancias EC2 del ASG para que puedan recuperar las credenciales de conexión (`host`, `port`, `dbname`, `username`, `password`) en tiempo de ejecución, sin exponer valores en texto plano.
 
 ---
 
