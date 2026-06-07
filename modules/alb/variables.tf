@@ -14,7 +14,7 @@ variable "subnets_ids_public" {
 }
 
 variable "certificate_arn" {
-  type = string
+  type        = string
   description = "The ARN of the ACM SSL/TLS certificate used to secure the Load Balancer HTTPS listener."
 }
 
@@ -24,6 +24,6 @@ variable "environment" {
 }
 
 variable "access_logs_s3" {
-  type = string
+  type        = string
   description = "Access logs for buckets s3"
 }
