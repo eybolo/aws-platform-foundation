@@ -44,18 +44,20 @@ El módulo automatiza el aprovisionamiento de la infraestructura de balanceo per
 A continuación se muestra cómo invocar este módulo de ALB, inyectando las dependencias de red de la VPC y conectándolo con tu estrategia de certificados:
 
 ```hcl
-module "alb_front_end_dev" {
+module "alb" {
   source = "../../modules/alb"
+  
+  # Configuracion General
+  environment           = var.environment
 
   # Configuración de Red
   vpc_id                = module.vpc.vpc_id
-  subnets_ids_public    = module.vpc.public_subnet_ids
-  subnets_cidrs_private = ["10.0.1.0/24", "10.0.2.0/24"] # Rango asignado a las subredes de cómputo/app
+  subnets_ids_public    = module.vpc.subnet_public_id
+  subnets_cidrs_private = module.vpc.subnet_private_cidr
 
   # Seguridad y Certificados
-  certificate_arn       = var.acm_certificate_arn
-  access_logs_s3        = "company-platform-logs-dev-s3"
-  environment           = "dev"
+  certificate_arn       = var.certificate_arn
+  access_logs_s3        = var.access_logs_s3
 }
 ```
 ---
