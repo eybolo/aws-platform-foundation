@@ -55,11 +55,11 @@ variable "instance_count" {
 
 variable "certificate_arn" {
   description = "The ARN of the ACM SSL/TLS certificate used to secure the Load Balancer HTTPS listener."
-  type = string 
+  type        = string
 }
 
 variable "access_logs_s3" {
-  type = string
+  type        = string
   description = "Access logs for buckets s3"
 }
 

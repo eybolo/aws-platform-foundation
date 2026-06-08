@@ -45,7 +45,7 @@ module "kms_ebs" {
   source = "../../modules/kms"
 
   # Configuracion General
-  environment  = var.environment
+  environment = var.environment
 
   service_principals = {
     "ec2.amazonaws.com" = {
@@ -64,7 +64,7 @@ module "rds_aurora" {
   source = "../../modules/rds-aurora"
 
   # Configuracion General
-  environment           = var.environment
+  environment = var.environment
 
   # Configuración de Red
   vpc_id                = module.vpc.vpc_id
@@ -86,9 +86,9 @@ module "rds_aurora" {
 
 module "alb" {
   source = "../../modules/alb"
-  
+
   # Configuracion General
-  environment           = var.environment
+  environment = var.environment
 
   # Configuración de Red
   vpc_id                = module.vpc.vpc_id
@@ -96,15 +96,15 @@ module "alb" {
   subnets_cidrs_private = module.vpc.subnet_private_cidr
 
   # Seguridad y Certificados
-  certificate_arn       = var.certificate_arn
-  access_logs_s3        = var.access_logs_s3
+  certificate_arn = var.certificate_arn
+  access_logs_s3  = var.access_logs_s3
 }
 
 module "asg" {
   source = "../../modules/asg"
 
   # Configuracion General
-  environment           = var.environment
+  environment = var.environment
 
   # Configuración de Red
   vpc_id         = module.vpc.vpc_id
@@ -123,6 +123,6 @@ module "asg" {
 
   # Configuración de Escalado
   asg_desired_capacity = var.asg_desired_capacity
-  asg_min_size         = var.asg_min_size 
+  asg_min_size         = var.asg_min_size
   asg_max_size         = var.asg_max_size
 }
