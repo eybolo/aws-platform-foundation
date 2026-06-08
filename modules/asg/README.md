@@ -55,30 +55,31 @@ El módulo automatiza el aprovisionamiento de la capa de cómputo elástica, la 
 A continuación se muestra cómo invocar este módulo de ASG, inyectando las dependencias de red del VPC y conectándolo con las salidas del módulo de ALB y Aurora:
 
 ```hcl
-module "asg_app_dev" {
+module "asg" {
   source = "../../modules/asg"
+
+  # Configuracion General
+  environment           = var.environment
 
   # Configuración de Red
   vpc_id         = module.vpc.vpc_id
-  subnet_private = module.vpc.private_subnet_ids
+  subnet_private = module.vpc.subnet_private_id
 
   # Integración con ALB
-  arn_target_group      = module.alb_front_end_dev.target_group_arn
-  security_group_id_alb = [module.alb_front_end_dev.security_group_id]
+  arn_target_group      = module.alb.target_group_arn
+  security_group_id_alb = [module.alb.security_group_id]
 
   # Integración con Aurora
-  security_group_id_aurora = [module.aurora_dev.security_group_id]
+  security_group_id_aurora = [module.rds_aurora.security_group_id]
 
   # Configuración de Cómputo
-  instance_type        = "t4g.small"
-  instance_volume_size = 20
+  instance_type        = var.instance_type
+  instance_volume_size = var.instance_volume_size
 
   # Configuración de Escalado
-  asg_desired_capacity = 2
-  asg_min_size         = 1
-  asg_max_size         = 4
-
-  environment = "dev"
+  asg_desired_capacity = var.asg_desired_capacity
+  asg_min_size         = var.asg_min_size 
+  asg_max_size         = var.asg_max_size
 }
 ```
 
