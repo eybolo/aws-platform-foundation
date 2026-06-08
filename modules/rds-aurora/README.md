@@ -66,13 +66,13 @@ module "rds_aurora" {
   key_arn = module.kms.key_arn
 
   # Configuración del Motor
-  engine_version  = "16.1"
-  database_name   = "app_dev_db"
-  master_username = "dbadmin"
+  engine_version  = var.engine_version
+  database_name   = var.database_name
+  master_username = var.master_username
 
   # Dimensionamiento del Cómputo
-  instance_count = 2
-  instance_class = "db.r6g.large"
+  instance_count = var.instance_count
+  instance_class = var.instance_class
 }
 ```
 
