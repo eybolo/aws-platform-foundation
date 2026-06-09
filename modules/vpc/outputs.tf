@@ -20,5 +20,5 @@ output "subnet_data_id" {
 
 output "subnet_private_cidr" {
   description = "List of CIDRs for all created private subnets"
-  value       = aws_subnet.subnet_private.cidr_block
+  value       = aws_subnet.subnet_private[*].cidr_block
 }
