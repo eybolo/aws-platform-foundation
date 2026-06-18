@@ -6,9 +6,9 @@ locals {
     "Owner"       = "platform-team"
   }
   name_prefix = "${local.common_tags.Project}-${var.environment}"
+  name_prefix_short = "aws-plt-fnd-${var.environment}"
 
   lb_name             = "${local.name_prefix}-lb"
-  lb_target_group     = "${local.name_prefix}-lb-tg"
+  lb_target_group     = "${local.name_prefix_short}-lb-tg"
   security_group_name = "${local.name_prefix}-lb-sg"
-  access_logs_name    = "${local.name_prefix}-lb-logs"
 }

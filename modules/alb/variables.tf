@@ -22,8 +22,3 @@ variable "environment" {
   type        = string
   description = "Deployment environment (e.g., dev, staging, prod)"
 }
-
-variable "access_logs_s3" {
-  type        = string
-  description = "Access logs for buckets s3"
-}
