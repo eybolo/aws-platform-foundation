@@ -1,5 +1,11 @@
 # Decisions
 
+## Deuda técnica / Decisión de arquitectura — rds-aurora:
+Se agregó lifecycle { ignore_changes = [availability_zones] } al recurso aws_rds_cluster. El atributo availability_zones se calcula dinámicamente con sort(slice(data.aws_availability_zones.available.names, 0, 2)). Aunque el sort() asegura un orden estable mientras la región tenga las mismas AZs disponibles, si AWS agrega o remueve una zona de disponibilidad en el futuro, el resultado del slice podría cambiar y forzar el reemplazo completo del cluster (con pérdida de datos en producción si no hay snapshot). El lifecycle evita ese reemplazo automático ante cambios en este atributo específico, priorizando la estabilidad del cluster sobre la actualización automática de AZs.
+
+## Crear un dominio real y Certificado ACM
+Queda pendiente crear un dominio real para utilizarlo en produccion y certificado ACM. Por el momento estamos usando uno falso.
+
 ## Deuda técnica: El security group de Aurora tiene egress abierto a 0.
 0.0.0/0 para permitir acceso a Secrets Manager y KMS. Solución correcta: crear VPC Endpoints para ambos servicios y restringir egress solo a la VPC.
 
@@ -46,6 +52,3 @@ El bucket del state necesita existir antes que Terraform.
 Las CMKs las crea Terraform, por lo tanto no pueden existir
 antes del bootstrap — problema del huevo y la gallina.
 Excepción controlada y documentada. Todo lo demás usa KMS CMK.
-
-
-
