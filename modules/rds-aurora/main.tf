@@ -57,7 +57,7 @@ resource "aws_rds_cluster" "this" {
   cluster_identifier      = local.rds_cluster_name
   engine                  = "aurora-postgresql"
   engine_version          = var.engine_version
-  availability_zones      = slice(data.aws_availability_zones.available.names, 0, 2)
+  availability_zones      = sort(slice(data.aws_availability_zones.available.names, 0, 2))
   database_name           = var.database_name
   master_username         = var.master_username
   master_password         = random_password.master_password_aurora.result
@@ -67,6 +67,13 @@ resource "aws_rds_cluster" "this" {
   db_subnet_group_name    = aws_db_subnet_group.this.name
   backup_retention_period = 5
   preferred_backup_window = "07:00-09:00"
+  skip_final_snapshot = true
+
+  lifecycle {
+    ignore_changes = [
+      availability_zones, # Ignora si el orden o la lista de AZs cambia en el data source
+    ]
+  }
 
   tags = local.common_tags
 }
