@@ -1,3 +1,10 @@
+# Shared / used by all modules
+variable "environment" {
+  description = "Deployment environment (e.g., dev, staging, prod)"
+  type        = string
+}
+
+# Module VPC
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type        = string
@@ -23,11 +30,7 @@ variable "availability_zones" {
   type        = list(string)
 }
 
-variable "environment" {
-  description = "Deployment environment (e.g., dev, staging, prod)"
-  type        = string
-}
-
+# Module rds
 variable "engine_version" {
   type        = string
   description = "The database engine version to use for the Aurora cluster (e.g., 3.05.2)."
@@ -53,11 +56,13 @@ variable "instance_count" {
   description = "instance number in the cluster"
 }
 
+# Module alb
 variable "certificate_arn" {
   description = "The ARN of the ACM SSL/TLS certificate used to secure the Load Balancer HTTPS listener."
   type        = string
 }
 
+# Module asg
 variable "instance_type" {
   description = "Type instance ec2"
   type        = string

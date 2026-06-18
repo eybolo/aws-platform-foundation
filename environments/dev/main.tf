@@ -44,7 +44,7 @@ module "kms_s3" {
 module "kms_ebs" {
   source = "../../modules/kms"
 
-  # Configuracion General
+  # General Config
   environment = var.environment
 
   service_principals = {
@@ -63,23 +63,23 @@ module "kms_ebs" {
 module "rds_aurora" {
   source = "../../modules/rds-aurora"
 
-  # Configuracion General
+  # General Config
   environment = var.environment
 
-  # Configuración de Red
+  # Network Config
   vpc_id                = module.vpc.vpc_id
   subnets_ids_data      = module.vpc.subnet_data_id
   subnets_cidrs_private = module.vpc.subnet_private_cidr
 
-  # Seguridad y Cifrado
+  # Security y Encrypted
   key_arn = module.kms_rds.key_arn
 
-  # Configuración del Motor
+  # Engine Configuración
   engine_version  = var.engine_version
   database_name   = var.database_name
   master_username = var.master_username
 
-  # Dimensionamiento del Cómputo
+  # Compute Configuration
   instance_count = var.instance_count
   instance_class = var.instance_class
 }
@@ -87,40 +87,40 @@ module "rds_aurora" {
 module "alb" {
   source = "../../modules/alb"
 
-  # Configuracion General
+  # General Config
   environment = var.environment
 
-  # Configuración de Red
+  # Network Config
   vpc_id                = module.vpc.vpc_id
   subnets_ids_public    = module.vpc.subnet_public_id
   subnets_cidrs_private = module.vpc.subnet_private_cidr
 
-  # Seguridad y Certificados
+  # Security and Certificates
   certificate_arn = var.certificate_arn
 }
 
 module "asg" {
   source = "../../modules/asg"
 
-  # Configuracion General
+  # General Config
   environment = var.environment
 
-  # Configuración de Red
+  # Network Config
   vpc_id         = module.vpc.vpc_id
   subnet_private = module.vpc.subnet_private_id
 
-  # Integración con ALB
+  # ALB Integration
   arn_target_group      = module.alb.target_group_arn
   security_group_id_alb = [module.alb.security_group_id]
 
-  # Integración con Aurora
+  # Aurora Integration
   security_group_id_aurora = [module.rds_aurora.security_group_id]
 
-  # Configuración de Cómputo
+  # Compute Configuration
   instance_type        = var.instance_type
   instance_volume_size = var.instance_volume_size
 
-  # Configuración de Escalado
+  # Scaling Configuration
   asg_desired_capacity = var.asg_desired_capacity
   asg_min_size         = var.asg_min_size
   asg_max_size         = var.asg_max_size
