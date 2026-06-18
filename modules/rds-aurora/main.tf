@@ -67,13 +67,13 @@ resource "aws_rds_cluster" "this" {
   db_subnet_group_name    = aws_db_subnet_group.this.name
   backup_retention_period = 5
   preferred_backup_window = "07:00-09:00"
-  skip_final_snapshot = true
+  skip_final_snapshot     = true
 
-   # Without this, a change in the AZ order returned by AWS forces a full
+  # Without this, a change in the AZ order returned by AWS forces a full
   # cluster replacement (data loss). See DECISIONS.md.
   lifecycle {
     ignore_changes = [
-      availability_zones, # Ignora si el orden o la lista de AZs cambia en el data source
+      availability_zones
     ]
   }
 

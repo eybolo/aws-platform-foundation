@@ -5,7 +5,7 @@ locals {
     "ManagedBy"   = "terraform"
     "Owner"       = "platform-team"
   }
-  name_prefix = "${local.common_tags.Project}-${var.environment}"
+  name_prefix       = "${local.common_tags.Project}-${var.environment}"
   name_prefix_short = "aws-plt-fnd-${var.environment}"
 
   lb_name             = "${local.name_prefix}-lb"

@@ -64,13 +64,13 @@ resource "aws_lb_listener" "this" {
 
 resource "aws_s3_bucket" "this" {
   bucket = "${local.name_prefix}-${data.aws_caller_identity.current.account_id}-logs-alb"
-  tags = local.common_tags
+  tags   = local.common_tags
 }
 
 data "aws_iam_policy_document" "this" {
   statement {
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = ["arn:aws:iam::127311923021:root"]
     }
 
@@ -83,15 +83,15 @@ data "aws_iam_policy_document" "this" {
     ]
 
     condition {
-      test = "StringEquals"
+      test     = "StringEquals"
       variable = "s3:x-amz-acl"
-      values = [ "bucket-owner-full-control" ]
+      values   = ["bucket-owner-full-control"]
     }
   }
 
   statement {
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = ["arn:aws:iam::127311923021:root"]
     }
 
@@ -101,7 +101,7 @@ data "aws_iam_policy_document" "this" {
 
     resources = [
       aws_s3_bucket.this.arn
-    ] 
+    ]
   }
 }
 
