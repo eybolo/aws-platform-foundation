@@ -69,6 +69,8 @@ resource "aws_rds_cluster" "this" {
   preferred_backup_window = "07:00-09:00"
   skip_final_snapshot = true
 
+   # Without this, a change in the AZ order returned by AWS forces a full
+  # cluster replacement (data loss). See DECISIONS.md.
   lifecycle {
     ignore_changes = [
       availability_zones, # Ignora si el orden o la lista de AZs cambia en el data source
