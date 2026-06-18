@@ -97,7 +97,6 @@ module "alb" {
 
   # Seguridad y Certificados
   certificate_arn = var.certificate_arn
-  access_logs_s3  = var.access_logs_s3
 }
 
 module "asg" {

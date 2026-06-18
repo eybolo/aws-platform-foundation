@@ -58,11 +58,6 @@ variable "certificate_arn" {
   type        = string
 }
 
-variable "access_logs_s3" {
-  type        = string
-  description = "Access logs for buckets s3"
-}
-
 variable "instance_type" {
   description = "Type instance ec2"
   type        = string
