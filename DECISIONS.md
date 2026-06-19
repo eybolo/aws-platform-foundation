@@ -1,5 +1,11 @@
 # Decisions
 
+## Pendiente refactor
+Migrar name_prefix/common_tags a modules/tags compartido, y centralizar cálculo de nombres de recursos (buckets, etc) en locals.tf en lugar de interpolación inline en main.tf. Aplica a: vpc, kms, alb, asg, rds-aurora.
+
+## Deuda técnica / Decisión de arquitectura — modules/tags:
+Se identificó duplicación de common_tags/name_prefix en cada módulo. Pendiente: evaluar creación de módulo modules/tags (solo locals/outputs, sin recursos) para centralizar esto.
+
 ## Deuda técnica / Decisión de arquitectura — rds-aurora:
 Se agregó lifecycle { ignore_changes = [availability_zones] } al recurso aws_rds_cluster. El atributo availability_zones se calcula dinámicamente con sort(slice(data.aws_availability_zones.available.names, 0, 2)). Aunque el sort() asegura un orden estable mientras la región tenga las mismas AZs disponibles, si AWS agrega o remueve una zona de disponibilidad en el futuro, el resultado del slice podría cambiar y forzar el reemplazo completo del cluster (con pérdida de datos en producción si no hay snapshot). El lifecycle evita ese reemplazo automático ante cambios en este atributo específico, priorizando la estabilidad del cluster sobre la actualización automática de AZs.
 
