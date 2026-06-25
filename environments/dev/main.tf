@@ -125,3 +125,52 @@ module "asg" {
   asg_min_size         = var.asg_min_size
   asg_max_size         = var.asg_max_size
 }
+
+module "config" {
+  source = "../../modules/config"
+
+  # General Config
+
+  environment = var.environment
+
+  # Retention and delivery policy
+  log_retention_days = 90
+  delivery_frequency = "TwentyFour_Hours"
+
+  # Compliance rule
+  config_rules = [
+    {
+      name       = "S3_BUCKET_PUBLIC_READ_PROHIBITED"
+      parameters = {}
+    },
+    {
+      name = "RESTRICTED_INCOMING_TRAFFIC"
+      parameters = {
+        blockedPort1 = "22"
+        blockedPort2 = "5432"
+      }
+    },
+    {
+      name       = "RDS_STORAGE_ENCRYPTED"
+      parameters = {}
+    },
+    {
+      name       = "RDS_INSTANCE_PUBLIC_ACCESS_CHECK"
+      parameters = {}
+    },
+  ]
+}
+
+module "guardduty" {
+  source = "../../modules/guardduty"
+
+  # General Config
+  environment = var.environment
+
+  # Frequency of Publication of Findings
+  finding_publishing_frequency = "SIX_HOURS"
+
+  # Additional Features
+  s3_data_events         = false
+  ebs_malware_protection = false
+}
