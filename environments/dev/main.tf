@@ -174,3 +174,12 @@ module "guardduty" {
   s3_data_events         = false
   ebs_malware_protection = false
 }
+
+module "security_hub" {
+  source = "../../modules/security-hub"
+
+  # Standards Security
+  standards_arn = [
+    "arn:aws:securityhub:::standards/aws-foundational-security-best-practices/v/1.0.0",
+  ]
+}
