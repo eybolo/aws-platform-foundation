@@ -8,6 +8,44 @@ este documento registra *errores concretos* y cómo se solucionaron.
 
 ---
 
+## [AWS Config] Policy managed con nombre incorrecto
+
+**Síntoma:**
+`terraform apply` falla con error de policy no encontrada al intentar adjuntar 
+la managed policy de Config al rol IAM.
+
+**Causa raíz:**
+La AWS Managed Policy se llama `AWS_ConfigRole` (con guion bajo, desde 2022), 
+no `AWSConfigRole` (nombre viejo deprecado). Usar el nombre viejo genera un error 
+de ARN inválido.
+
+**Solución:**
+Usar el ARN correcto:
+```hcl
+policy_arn = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
+```
+
+---
+
+## [AWS Config] Error al activar el recorder sin Delivery Channel
+
+**Síntoma:**
+`terraform apply` falla al intentar habilitar `aws_config_configuration_recorder_status` 
+con un error de la API de AWS indicando que no existe un canal de entrega configurado.
+
+**Causa raíz:**
+AWS exige que el Delivery Channel exista **antes** de poder activar el recorder. 
+Como no hay referencia de atributo entre ambos resources, Terraform no infiere 
+el orden automáticamente.
+
+**Solución:**
+Agregar `depends_on` explícito en `aws_config_configuration_recorder_status`:
+```hcl
+depends_on = [aws_config_delivery_channel.this]
+```
+
+---
+
 ## [ALB] Access Denied al habilitar access_logs en S3
 
 **Síntoma:**
