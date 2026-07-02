@@ -12,3 +12,8 @@ output "secretsmanager_secret_arn" {
   description = "ASG needs the secret ARN name for ec2 instances"
   value       = aws_secretsmanager_secret.this.arn
 }
+
+output "rds_cluster_identifier" {
+  description = "The cluster identifier of the RDS cluster."
+  value       = aws_rds_cluster.this.cluster_identifier
+} 
