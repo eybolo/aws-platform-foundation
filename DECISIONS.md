@@ -1,5 +1,26 @@
 # Decisions
 
+## Ampliación de Fase 4 — Módulos notifications y security-notifications
+Se agregaron dos módulos fuera del plan original: `notifications` (SNS Topic centralizado) 
+y `security-notifications` (EventBridge rules para GuardDuty y Security Hub). 
+Razón: se identificó que sin estas piezas, los findings de seguridad no tenían 
+canal de notificación — solo eran visibles en consola.
+
+## Pendiente refactor
+Migrar name_prefix/common_tags a modules/tags compartido, y centralizar cálculo 
+de nombres de recursos (buckets, etc) en locals.tf en lugar de interpolación inline 
+en main.tf. Aplicar también description en roles IAM. 
+Aplica a: vpc, kms, alb, asg, rds-aurora.
+
+## Pendiente — CloudWatch Dashboard 
+Body del dashboard definido visualmente en consola de AWS una vez que la infraestructura esté corriendo. Copiar JSON resultante desde "Actions → View/Edit source" y pegarlo en modules/cloudwatch/main.tf.
+
+## Deuda técnica — Constraint de versión Terraform (`~>` → `>=`)
+Corregir ~> 1.7 a >= 1.7 en los módulos anteriores vpc, kms, alb, asg, rds-aurora.
+
+## Multi-región (futuro)
+Si se agrega una segunda región a la Landing Zone, include_global_resource_types debe quedar true solo en us-east-1 (región principal). En cualquier región adicional, debe ser false, para evitar duplicar el registro de recursos globales (IAM, Route53, etc).
+
 ## Pendiente refactor
 Migrar name_prefix/common_tags a modules/tags compartido, y centralizar cálculo de nombres de recursos (buckets, etc) en locals.tf en lugar de interpolación inline en main.tf. Aplica a: vpc, kms, alb, asg, rds-aurora.
 
