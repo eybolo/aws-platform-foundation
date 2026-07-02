@@ -183,3 +183,50 @@ module "security_hub" {
     "arn:aws:securityhub:::standards/aws-foundational-security-best-practices/v/1.0.0",
   ]
 }
+
+module "notifications" {
+  source = "../../modules/notifications"
+
+  # General Config
+  environment = var.environment
+
+  # Notification Subscription
+  email_sns = var.email_sns
+}
+
+module "cloudwatch" {
+  source = "../../modules/cloudwatch"
+
+  # General Config
+  environment = var.environment
+
+  # Auto Scaling Group
+  autoscaling_group_name = module.asg.autoscaling_group_name
+  asg_cpu                = 80
+
+  # Load Balancer
+  lb_arn_suffix              = module.alb.lb_arn_suffix
+  lb_target_group_arn_suffix = module.alb.lb_target_group_arn_suffix
+  lb_5XX                     = 50
+
+  # RDS
+  rds_cluster_identifier = module.rds_aurora.rds_cluster_identifier
+  rds_connections        = 100
+  rds_storage_free       = 20
+
+  # Notifications
+  sns_topic_arn = module.notifications.sns_topic_arn
+}
+
+module "security_notifications" {
+  source = "../../modules/security-notifications"
+
+  # General Config
+  environment = var.environment
+
+  # Severity threshold
+  minimum_severity = 4
+
+  # Notifications
+  sns_topic_arn = module.notifications.sns_topic_arn
+}

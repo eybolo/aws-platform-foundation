@@ -87,3 +87,14 @@ variable "instance_volume_size" {
   description = "Volume size disk for instance ec2"
   type        = number
 }
+
+# Module notifications
+variable "email_sns" {
+  description = "Email using to notifications"
+  type        = string
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", var.email_sns))
+    error_message = "The provided email address is not valid. Please enter a valid email format (e.g., user@example.com)."
+  }
+}
