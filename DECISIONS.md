@@ -1,5 +1,39 @@
 # Decisions
 
+## [Fase 5 — CI/CD] Alcance de multi-cuenta y permisos IAM
+
+**Fecha:** 2026-07-06
+
+### Contexto
+El roadmap original (documento Proyecto 3) ubicaba "multi-cuenta" dentro 
+del scope del Proyecto 1. Ese roadmap se armó antes de iniciar el 
+Proyecto 1, sin experiencia práctica todavía.
+
+### Decisión
+- Multi-cuenta / AWS Organizations queda **fuera de scope** de los 
+  Proyectos 1, 2 y 3. Se implementará como proyecto propio, posterior 
+  al Proyecto 3, una vez dominada la plataforma base (Terraform, EKS, 
+  Crossplane/Backstage).
+- Proyectos 1, 2 y 3 se construyen en **una sola cuenta AWS**.
+- El aislamiento entre teams en el Proyecto 3 se resuelve a nivel de 
+  Kubernetes (namespaces + ResourceQuota + NetworkPolicy), no a nivel 
+  de cuenta AWS.
+
+### Deuda técnica conocida (Proyecto 1)
+- El rol IAM del workflow de **validación** (GitHub Actions, PRs) usa 
+  la managed policy `ReadOnlyAccess`.
+- Esto viola *least privilege* a nivel de alcance: no está acotado por 
+  proyecto, porque las condition keys de tags (`aws:ResourceTag/...`) 
+  no aplican sobre acciones `Describe*`/`List*` cuyo "Resource type" 
+  soportado es wildcard (`*`), no ARNs puntuales.
+- Mitigación real de este límite: solo se resuelve con separación de 
+  cuentas AWS (pendiente, ver punto anterior). Por ahora se acepta el 
+  riesgo dentro de una única cuenta de desarrollo.
+
+### Razón
+Priorizar dominar cada capa (IaC → EKS/GitOps → IDP) antes de sumar la 
+meta-estructura de organización de cuentas, evitando resolver dos 
+problemas de diseño grandes en simultáneo.
 ## Ampliación de Fase 4 — Módulos notifications y security-notifications
 Se agregaron dos módulos fuera del plan original: `notifications` (SNS Topic centralizado) 
 y `security-notifications` (EventBridge rules para GuardDuty y Security Hub). 
