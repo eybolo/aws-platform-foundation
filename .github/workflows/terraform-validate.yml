@@ -34,6 +34,14 @@ jobs:
           terraform init \
             -backend-config="bucket=${{ vars.TF_BACKEND_BUCKET }}" \
             -backend-config="region=${{ vars.TF_BACKEND_REGION }}"
+      
+      - name: Create file Terraform.tfvars from Secrets
+        env:
+          TFVARS_SECRET : ${{ secrets.TF_VARS_DEV}}
+        run: |
+          cat << EOF > terraform.tfvars
+          $TFVARS_SECRET
+          EOF
 
       - name: Terraform Plan
         run: terraform plan
