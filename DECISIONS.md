@@ -1,5 +1,22 @@
 # Decisions
 
+## [Fase 5] Protección contra PRs de forks externos (repo público)
+El repo es público → cualquiera puede forkear y abrir PR contra main, 
+disparando el workflow con un token OIDC válido (sub: repo:.../pull_request).
+Mitigación: activar "Require approval for first-time contributors" en 
+Settings → Actions → General, para que PRs externos no corran el 
+workflow automáticamente sin revisión manual.
+
+## [Fase 5] terraform-validate.yml — diseño del pipeline
+
+- Trigger: `pull_request` (types: opened, synchronize, reopened) contra `main`.
+- Doble `terraform init`: primero con `-backend=false` (providers/módulos, 
+  sin credenciales AWS) para que `fmt`/`validate` corran sin exponer 
+  credenciales; segundo init real (con backend S3) recién después de 
+  `configure-aws-credentials`, para minimizar el tiempo de vida de las 
+  credenciales en el runner.
+- Auth vía OIDC (rol de Fase 1), sin access keys de larga duración.
+
 ## [Fase 5 — CI/CD] Alcance de multi-cuenta y permisos IAM
 
 **Fecha:** 2026-07-06
