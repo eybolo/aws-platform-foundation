@@ -1,0 +1,44 @@
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: environments/dev/
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0"
+
+      - name: Terraform Init (sin backend, solo providers)
+        run: terraform init -backend=false
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::593793040594:role/github-actions-role
+          aws-region: us-east-1
+
+      - name: Terraform Init (real, con backend S3)
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ vars.TF_BACKEND_BUCKET }}" \
+            -backend-config="region=${{ vars.TF_BACKEND_REGION }}"
+
+      - name: Terraform Plan
+        run: terraform plan
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
