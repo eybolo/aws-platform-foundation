@@ -69,7 +69,6 @@ resource "aws_iam_role_policy_attachment" "github_actions_role_attachment_apply"
 
 resource "aws_iam_policy" "github_actions_policy_apply" {
   name = "github-actions-policy-apply"
-
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -84,12 +83,15 @@ resource "aws_iam_policy" "github_actions_policy_apply" {
           "iam:DeleteRole",
           "iam:ListAttachedRolePolicies",
           "iam:ListRolePolicies",
+          "iam:ListInstanceProfilesForRole",
+          "iam:CreateInstanceProfile",
+          "iam:GetRolePolicy",
+          "iam:PassRole"
         ]
         Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"
       }
     ]
   })
-
   tags = local.common_tags
 }
 
