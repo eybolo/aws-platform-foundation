@@ -13,11 +13,6 @@ variable "subnets_ids_public" {
   description = "IDS subnet public for using ALB"
 }
 
-variable "certificate_arn" {
-  type        = string
-  description = "The ARN of the ACM SSL/TLS certificate used to secure the Load Balancer HTTPS listener."
-}
-
 variable "environment" {
   type        = string
   description = "Deployment environment (e.g., dev, staging, prod)"

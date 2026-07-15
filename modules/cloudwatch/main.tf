@@ -61,5 +61,6 @@ resource "aws_cloudwatch_metric_alarm" "rds_storage" {
 resource "aws_cloudwatch_dashboard" "this" {
   dashboard_name = local.dashboard
   dashboard_body = jsonencode({
+    widgets = []
   })
 }

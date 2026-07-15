@@ -67,3 +67,31 @@ resource "aws_iam_role_policy_attachment" "github_actions_role_attachment_apply"
   policy_arn = "arn:aws:iam::aws:policy/PowerUserAccess"
 }
 
+resource "aws_iam_policy" "github_actions_policy_apply" {
+  name = "github-actions-policy-apply"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:CreateRole",
+          "iam:AttachRolePolicy",
+          "iam:PutRolePolicy",
+          "iam:TagRole",
+          "iam:GetRole",
+          "iam:DeleteRole",
+        ]
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"
+      }
+    ]
+  })
+
+  tags = local.common_tags
+}
+
+resource "aws_iam_role_policy_attachment" "github_actions_role_attachment_apply_iam" {
+  role       = aws_iam_role.github_actions_role_apply.name
+  policy_arn = aws_iam_policy.github_actions_policy_apply.arn
+}
