@@ -109,9 +109,17 @@ resource "aws_iam_policy" "github_actions_policy_secrets_read" {
           "secretsmanager:GetSecretValue"
         ]
         Resource = "arn:aws:secretsmanager:us-east-1:${data.aws_caller_identity.current.account_id}:secret:aws-platform-foundation-dev-*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt"
+        ]
+        Resource = "arn:aws:kms:us-east-1:${data.aws_caller_identity.current.account_id}:key/*"
       }
     ]
   })
+
   tags = local.common_tags
 }
 
