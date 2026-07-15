@@ -97,3 +97,33 @@ resource "aws_iam_role_policy_attachment" "github_actions_role_attachment_apply_
   role       = aws_iam_role.github_actions_role_apply.name
   policy_arn = aws_iam_policy.github_actions_policy_apply.arn
 }
+
+resource "aws_iam_policy" "github_actions_policy_secrets_read" {
+  name = "github-actions-policy-secrets-read"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = "arn:aws:secretsmanager:us-east-1:${data.aws_caller_identity.current.account_id}:secret:aws-platform-foundation-dev-*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt"
+        ]
+        Resource = "arn:aws:kms:us-east-1:${data.aws_caller_identity.current.account_id}:key/*"
+      }
+    ]
+  })
+
+  tags = local.common_tags
+}
+
+resource "aws_iam_role_policy_attachment" "github_actions_role_attachment_secrets_read" {
+  role       = aws_iam_role.github_actions_role.name
+  policy_arn = aws_iam_policy.github_actions_policy_secrets_read.arn
+}
