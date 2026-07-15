@@ -82,6 +82,8 @@ resource "aws_iam_policy" "github_actions_policy_apply" {
           "iam:TagRole",
           "iam:GetRole",
           "iam:DeleteRole",
+          "iam:ListAttachedRolePolicies",
+          "iam:ListRolePolicies",
         ]
         Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"
       }
