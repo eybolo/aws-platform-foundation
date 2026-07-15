@@ -56,12 +56,6 @@ variable "instance_count" {
   description = "instance number in the cluster"
 }
 
-# Module alb
-variable "certificate_arn" {
-  description = "The ARN of the ACM SSL/TLS certificate used to secure the Load Balancer HTTPS listener."
-  type        = string
-}
-
 # Module asg
 variable "instance_type" {
   description = "Type instance ec2"

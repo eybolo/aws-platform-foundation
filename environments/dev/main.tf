@@ -95,8 +95,6 @@ module "alb" {
   subnets_ids_public    = module.vpc.subnet_public_id
   subnets_cidrs_private = module.vpc.subnet_private_cidr
 
-  # Security and Certificates
-  certificate_arn = var.certificate_arn
 }
 
 module "asg" {
