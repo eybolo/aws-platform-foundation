@@ -178,7 +178,7 @@ module "security_hub" {
 
   # Standards Security
   standards_arn = [
-    "arn:aws:securityhub:::standards/aws-foundational-security-best-practices/v/1.0.0",
+    "arn:aws:securityhub:us-east-1::standards/aws-foundational-security-best-practices/v/1.0.0"
   ]
 }
 
