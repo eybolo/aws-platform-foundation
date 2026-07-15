@@ -84,11 +84,22 @@ resource "aws_iam_policy" "github_actions_policy_apply" {
           "iam:ListAttachedRolePolicies",
           "iam:ListRolePolicies",
           "iam:ListInstanceProfilesForRole",
-          "iam:CreateInstanceProfile",
           "iam:GetRolePolicy",
           "iam:PassRole"
         ]
         Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:CreateInstanceProfile",
+          "iam:DeleteInstanceProfile",
+          "iam:GetInstanceProfile",
+          "iam:AddRoleToInstanceProfile",
+          "iam:RemoveRoleFromInstanceProfile",
+          "iam:TagInstanceProfile"
+        ]
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/*"
       }
     ]
   })
